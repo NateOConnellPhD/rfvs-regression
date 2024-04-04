@@ -4,17 +4,10 @@
 #'
 #' @title
 #' @param results
-bench_summarize <- function(bm_comb) {
+bench_summarize <- function(bm_comb, cols_to_summarize) {
 
- smry_cols <- c("n_selected",
-                "rmse_axis",
-                "rsq_axis",
-                "rmse_oblique",
-                "rsq_oblique",
-                "time")
-
- bm_comb <- bm_comb %>%
-  mutate(time = as.numeric(time, units = 'secs'))
+ smry_cols <- c(cols_to_summarize,
+                paste(cols_to_summarize, 'z', sep = "_"))
 
  # summary for each dataset ----
 
@@ -27,10 +20,7 @@ bench_summarize <- function(bm_comb) {
  quants <- bm_comb %>%
   reframe(
    across(
-    .cols = c(n_selected,
-              rmse_axis, rsq_axis,
-              rmse_oblique, rsq_oblique,
-              time),
+    .cols = all_of(smry_cols),
     .fns = ~ quantile(.x, probs = c(1,2,3) / 4, na.rm = TRUE)
    ),
    quantile = c(25, 50, 75),
@@ -38,6 +28,7 @@ bench_summarize <- function(bm_comb) {
   ) %>%
   pivot_wider(names_from = quantile,
               values_from = all_of(smry_cols))
+
 
  smry_by_data <- left_join(mean_se, quants)
 
@@ -52,10 +43,7 @@ bench_summarize <- function(bm_comb) {
  quants <- bm_comb %>%
   reframe(
    across(
-    .cols = c(n_selected,
-              rmse_axis, rsq_axis,
-              rmse_oblique, rsq_oblique,
-              time),
+    .cols = all_of(smry_cols),
     .fns = ~ quantile(.x, probs = c(1,2,3) / 4, na.rm = TRUE)
    ),
    quantile = c(25, 50, 75),
@@ -71,3 +59,4 @@ bench_summarize <- function(bm_comb) {
       overall = smry_overall)
 
 }
+

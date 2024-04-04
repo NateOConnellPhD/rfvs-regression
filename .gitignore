@@ -50,3 +50,6 @@ renv/
 
 # datasets
 data
+
+# this random pdf that R makes sometimes...
+Rplots

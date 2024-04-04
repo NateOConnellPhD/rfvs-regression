@@ -105,7 +105,4 @@ bench_rfvs <- function(dataset,
   rsq_oblique = eval_rsq(pred_oblique, test$outcome),
   time = end_time - start_time
  )
-
-
-
 }
