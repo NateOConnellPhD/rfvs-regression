@@ -11,7 +11,7 @@ plan(callr)
 lapply(list.files("./R", full.names = TRUE), source)
 
 # needs to be run outside of tar_plan to avoid dynamic branching
-#datasets_make(write_data = TRUE)
+# datasets_make(write_data = TRUE)
 
 # if you don't need to update the tasks, just load them
 datasets_included <- list.files('data', pattern = "-outcome-") %>%
@@ -81,7 +81,6 @@ cols_to_summarize <- c("n_selected",
                        "rsq_oblique",
                        "time",
                        "log_time")
-
 
 # Note: targets that start with the term 'datasets' require folder
 #  'data/' created above using datasets_make().
