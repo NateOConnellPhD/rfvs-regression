@@ -25,11 +25,15 @@ datasets_select <- function(max_miss_prop,
 
  dataset_record <- tibble(exclusion = character(), n = integer())
 
- datasets <- as.data.table(listOMLDataSets())
+ datasets <- bind_rows(
+  openml = as.data.table(listOMLDataSets()),
+  modeldata = datasets_modeldata(),
+  .id = 'source'
+ )
 
  dataset_record <- dataset_record %>%
   add_row(
-   exclusion = "Datasets available in open ML",
+   exclusion = "Datasets available",
    n = nrow(datasets)
   )
 
@@ -38,7 +42,7 @@ datasets_select <- function(max_miss_prop,
  tasks <- as.data.table(listOMLTasks(task.type = "Supervised Regression"))
 
  datasets <- datasets %>%
-  .[data.id %in% tasks$data.id] %>%
+  .[data.id %in% tasks$data.id | data.id < 0] %>%
   .[number.of.classes == 0]
 
  # this is a classification task dressed as a regression one
@@ -175,17 +179,31 @@ datasets_select <- function(max_miss_prop,
 
   print(did)
 
-  oml_data <- getOMLDataSet(data.id = did, verbosity = 0)
+  if(did < 0){
 
-  # use max of 1 outcome per dataset
-  outcome <- tasks[data.id == did] %>%
-   getElement('target.feature') %>%
-   unique() %>%
-   .[1]
+   data_name <- datasets[data.id == did, name]
+   data <- get_modeldata(data_name)
+   outcome <- get_modeldata_outcomes(data_name)
+
+  } else {
+
+   oml_data <- getOMLDataSet(data.id = did, verbosity = 0)
+
+   data_name <- oml_data$desc$name
+
+   data <- oml_data$data
+
+   # use max of 1 outcome per dataset
+   outcome <- tasks[data.id == did] %>%
+    getElement('target.feature') %>%
+    unique() %>%
+    .[1]
+
+  }
 
   if(!is_empty(outcome)){
 
-   setDT(oml_data$data)
+   setDT(data)
 
    for(o in outcome){
 
@@ -195,7 +213,7 @@ datasets_select <- function(max_miss_prop,
      o = paste0("X", o)
     }
 
-    .n_uni <- length(unique(na.omit(oml_data$data[[o]])))
+    .n_uni <- length(unique(na.omit(data[[o]])))
 
     datasets[data.id == did, n_uni := .n_uni]
 
@@ -203,15 +221,16 @@ datasets_select <- function(max_miss_prop,
     # other outcome(s) can be used as a predictor for current one
     if( .n_uni >= min_outcome_uni ){
 
-     setnames(oml_data$data, old = o, new = 'outcome')
+     setnames(data, old = o, new = 'outcome')
 
-     fname <- paste0("data/", oml_data$desc$name, '-outcome-', o, '.csv')
+     fname <- paste0("data/", data_name, '-outcome-', o, '.csv')
 
      if(write_data){
-      if(!file.exists(fname)) fwrite(oml_data$data, fname)
+      if(!file.exists(fname)) fwrite(data, fname)
      }
 
-     setnames(oml_data$data, old = 'outcome', new = o)
+     # in case its a dataset with multiple outcomes
+     setnames(data, old = 'outcome', new = o)
 
     }
 
@@ -235,3 +254,113 @@ datasets_select <- function(max_miss_prop,
       record = dataset_record)
 
 }
+
+
+datasets_modeldata <- function(){
+
+ data_list <- get_modeldata()
+
+ map_dfr(
+  data_list,
+  .f = ~ {
+
+   is.categorical <- function(x){
+    is.factor(x) | is.character(x)
+   }
+
+   n_row_miss <- nrow(.x) - nrow(drop_na(.x))
+   n_col_nmrc <- sum(sapply(.x, is.numeric))
+   n_col_catg <- sum(sapply(.x, is.categorical))
+
+   tibble(data.id = 0,
+          version = 1,
+          format = 'csv',
+          number.of.classes = 0,
+          number.of.features = ncol(.x)-1,
+          number.of.instances = nrow(.x),
+          number.of.instances.with.missing.values = n_row_miss,
+          number.of.missing.values = sum(is.na(.x)),
+          number.of.numeric.features = n_col_nmrc,
+          number.of.symbolic.features = n_col_catg)
+
+  },
+  .id = 'name'
+ ) %>%
+  mutate(data.id = -1 * seq(n()))
+
+}
+
+
+get_modeldata <- function(.names = NULL){
+
+  data_list <- list(
+
+   Chicago = modeldata::Chicago %>%
+    select(-date),
+
+   car_prices = modeldata::car_prices %>%
+    mutate(Price = log(Price)),
+
+   check_times = modeldata::check_times %>%
+    select(-package) %>%
+    mutate(check_time = log(check_time)),
+
+   chem_proc_yield = modeldata::chem_proc_yield,
+
+   deliveries = modeldata::deliveries,
+
+   hotel_rates = modeldata::hotel_rates %>%
+    mutate(avg_price_per_room = log(avg_price_per_room)),
+
+   meats_protein = modeldata::meats %>%
+    select(-fat, -water),
+
+   meats_fat = modeldata::meats %>%
+    select(-protein, -water),
+
+   meats_water = modeldata::meats %>%
+    select(-fat, -protein),
+
+   permeability_qsar = modeldata::permeability_qsar,
+
+   stackoverflow = modeldata::stackoverflow,
+
+   ames = modeldata::ames %>%
+    mutate(Sale_Price = log(Sale_Price))
+
+  )
+
+ out <- data_list[.names %||% names(data_list)]
+
+ if(length(out) == 1) return(out[[1]])
+
+ out
+
+
+}
+
+get_modeldata_outcomes <- function(.names = NULL){
+
+ outcomes <- c(
+  Chicago = "ridership",
+  car_prices = "Price",
+  check_times = "check_time",
+  chem_proc_yield = "yield",
+  deliveries = "time_to_delivery",
+  hotel_rates = "avg_price_per_room",
+  meats_protein = "protein",
+  meats_fat = "fat",
+  meats_water = "water",
+  permeability_qsar = "permeability",
+  stackoverflow = "Salary",
+  ames = "Sale_Price"
+ )
+
+ out <- outcomes[.names %||% names(outcomes)]
+
+ if(length(out) == 1) return(out[[1]])
+
+ out
+
+}
+
