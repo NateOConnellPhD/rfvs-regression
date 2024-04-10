@@ -1,4 +1,4 @@
-datasets_full <- function(){
+datasets_full <- function(data_cv){
  df <- read.csv("data/datasets_included.csv")
- df <- merge(df, datasets_cv, by="name")
+ df <- merge(df, data_cv, by="name")
 }

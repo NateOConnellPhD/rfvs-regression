@@ -14,6 +14,8 @@ bench_rfvs <- function(dataset,
                        run,
                        train_prop = NULL) {
 
+
+
  fname <- as.character(glue("data/{dataset}-outcome-{outcome}.csv"))
 
  data <- fread(fname)
@@ -67,25 +69,23 @@ bench_rfvs <- function(dataset,
  start_time <- Sys.time()
 
  vars_selected <- try(
-  rfvs(train = train, formula = formula) %>%
-   c("outcome") %>%
-   unique()
+  rfvs(train = train, formula = formula)
  )
 
- if(is_error(vars_selected)) browser()
+ if(is_error(vars_selected$vars)) browser()
 
  end_time <- Sys.time()
 
- fit_axis <- ranger(outcome ~ ., data = train[, vars_selected])
+ fit_axis <- ranger(outcome ~ ., data = train[, vars_selected$vars])
 
- fit_oblique <- orsf(train[, vars_selected], outcome ~ .)
+ fit_oblique <- orsf(train[, vars_selected$vars], outcome ~ .)
 
  pred_axis <- fit_axis %>%
-  predict(data = as.data.frame(test[, vars_selected])) %>%
+  predict(data = as.data.frame(test[, vars_selected$vars])) %>%
   getElement('predictions')
 
  pred_oblique <- fit_oblique %>%
-  predict(new_data = as.data.frame(test[, vars_selected])) %>%
+  predict(new_data = as.data.frame(test[, vars_selected$vars])) %>%
   as.numeric()
 
  rsq_obi = eval_rsq(pred_oblique, test$outcome)
@@ -98,11 +98,11 @@ bench_rfvs <- function(dataset,
   run = run,
   n_row = nrow(train),
   n_col = ncol(train),
-  n_selected = length(vars_selected) - 1,
+  n_selected = length(vars_selected$vars) - 1,
+  none_selected = vars_selected$no_var_sel,
   rmse_axis = eval_rmse(pred_axis, test$outcome),
   rsq_axis = eval_rsq(pred_axis, test$outcome),
   rmse_oblique = eval_rmse(pred_oblique, test$outcome),
   rsq_oblique = eval_rsq(pred_oblique, test$outcome),
   time = end_time - start_time
- )
-}
+ )}

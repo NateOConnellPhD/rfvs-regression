@@ -8,7 +8,10 @@
 #' @param ... not used
 rfvs_none <- function(train, formula, ...) {
 
-  names(train)
+
+
+ list(vars =  names(train) %>% c("outcome") %>% unique(),
+      no_var_sel = 0)
 
 }
 
@@ -24,7 +27,8 @@ rfvs_aorsf <- function(train, formula, ...){
 
  best_index <- which.max(data_vs$stat_value)
 
- data_vs$predictors_included[best_index][[1]]
+ list(vars = data_vs$predictors_included[best_index][[1]] %>% c("outcome"),
+      no_var_sel = 0)
 
 }
 
@@ -40,7 +44,10 @@ rfvs_negate <- function(train, formula, ...){
 
  best_index <- which.max(data_vs$stat_value)
 
- data_vs$predictors_included[best_index][[1]]
+
+ list(vars = data_vs$predictors_included[best_index][[1]]%>% c("outcome"),
+      no_var_sel = 0)
+
 
 }
 
@@ -56,7 +63,8 @@ rfvs_anova <- function(train, formula, ...){
 
  best_index <- which.max(data_vs$stat_value)
 
- data_vs$predictors_included[best_index][[1]]
+ list(vars =  data_vs$predictors_included[best_index][[1]]%>% c("outcome"),
+      no_var_sel = 0)
 
 }
 
@@ -71,19 +79,15 @@ rfvs_vsurf <- function(train, formula, ...) {
  out <- colnames(x)[vi$varselect.pred]
 
  if(is_empty(out)){
-  out <- colnames(x)[vi$varselect.interp]
- }
+   vars_perm <- rfvs_permute(train, formula)
+   list(vars = vars_perm$vars,
+        no_var_sel = 1)
 
- if(is_empty(out)){
-  out <- colnames(x)[vi$varselect.thres]
- }
+ }else{
 
- if(is_empty(out)){
-  # go with most important variable if all else fails
-  out <- rfvs_permute(train, formula)[1]
+ list(vars = out %>% c("outcome"),
+      no_var_sel = 0)
  }
-
- out
 
 }
 
@@ -96,16 +100,14 @@ rfvs_hap <- function(train, formula, ...){
                   progressbar = FALSE)
 
  if(all(vi$testres == 'keep H0')){
-
-  return(
-   names(sort(vi$varimp, decreasing = TRUE))[1]
-  )
-
+   list(vars = names(sort(vi$varimp, decreasing = TRUE))[1] %>% c("outcome"),
+        no_var_sel = 1)
+ }else{
+ list(vars = names(vi$testres)[vi$testres == 'accept H1']%>% c("outcome"),
+      no_var_sel = 0)
  }
-
- names(vi$testres)[vi$testres == 'accept H1']
-
 }
+
 
 rfvs_permute <- function(train, formula, ...) {
 
@@ -124,7 +126,8 @@ rfvs_permute <- function(train, formula, ...) {
   )
  }
 
- names(vi)[vi > 0]
+ list(vars = names(vi)[vi > 0] %>% c("outcome"),
+      no_var_sel = 0)
 
 }
 
@@ -144,7 +147,10 @@ rfvs_cif <- function(train, formula, ...) {
   )
  }
 
- names(vi)[vi > 0]
+
+
+ list(vars =  names(vi)[vi > 0]  %>% c("outcome"),
+      no_var_sel = 0)
 
 }
 
@@ -159,7 +165,9 @@ rfvs_mindepth <- function(train,
                         conservative = conservative,
                         verbose = FALSE)
 
- vi$topvars
+
+ list(vars =   vi$topvars  %>% c("outcome"),
+      no_var_sel = 0)
 
 }
 
@@ -232,7 +240,6 @@ rfvs_jiang <- function(train,
  }
 
  # compute the error expected when no predictor is used at all
-
  no_pred_error <- eval_rmse(estimate = mean(y), truth = y)
 
  errors <- c(no_pred_error, errors)
@@ -246,7 +253,10 @@ rfvs_jiang <- function(train,
 
  # subtract 1 because the errors have an additional value at the beginning
  output <- selections[[max(n_optim - 1, 1)]]
- output
+
+ list(vars =  output %>% c("outcome"),
+      no_var_sel = 0)
+
 
 }
 
@@ -314,12 +324,20 @@ rfvs_svetnik <- function(train,
  optimum.number <- which.min(mean.errors)
 
  if (optimum.number == 1) {
-  return(final.imps[1])
+
+ list(vars =   final.imps[1]  %>% c("outcome"),
+       no_var_sel = 0)
+ } else{
+
+ list(vars =   final.imps[seq(optimum.number-1)]  %>% c("outcome"),
+      no_var_sel = 0)
  }
 
- return(final.imps[seq(optimum.number-1)])
-
 }
+
+
+
+
 
 
 ### RRF regularized RF
@@ -333,7 +351,10 @@ rfvs_rrf <- function(train, formula, ...){
   as.matrix()
 
  rrf<- RRF(x=x, y=y)
- colnames(x)[rrf$feaSet]
+
+ list(vars =   colnames(x)[rrf$feaSet]  %>% c("outcome"),
+      no_var_sel = 0)
+
 }
 
 ### Caret package/recursive feature elimination
@@ -351,7 +372,9 @@ rfvs_caret <- function(train, formula, ...){
               sizes = seq(from = 1, to = ncol(x), by = 1),
               rfeControl = rfeControl(functions = rfFuncs))
 
- predictors(caret)
+
+ list(vars =   predictors(caret)  %>% c("outcome"),
+      no_var_sel = 0)
 
 }
 
@@ -363,15 +386,17 @@ rfvs_boruta <- function(train, formula,...){
  tentative <- which(boruta$finalDecision == "Tentative")
 
  if(!is_empty(confirmed)){
-  return(names(boruta$finalDecision)[confirmed])
+  return(list(vars =   names(boruta$finalDecision)[confirmed]  %>% c("outcome"),
+       no_var_sel = 0))
+ } else  if(!is_empty(tentative)){
+  return(list(vars =   names(boruta$finalDecision)[tentative]  %>% c("outcome"),
+       no_var_sel = 0))
+ } else{
+  # if it rejects everything, use standard importance to pick just 1
+  vars_perm <- rfvs_permute(train, formula)
+  list(vars = vars_perm$vars,
+       no_var_sel = 1)
  }
-
- if(!is_empty(tentative)){
-  return(names(boruta$finalDecision)[tentative])
- }
-
- # if it rejects everything, use standard importance to pick just 1
- rfvs_permute(train, formula)[1]
 
 }
 
@@ -392,8 +417,13 @@ rfvs_alt <- function(train, formula, ...){
 
  if(is_empty(out)){
   out <- rownames(pvals$pvalue)[which.min(pvals$pvalue)]
+  list(vars =   out  %>% c("outcome"),
+       no_var_sel = 1)
+ }else{
+  list(vars =   out  %>% c("outcome"),
+       no_var_sel = 0)
  }
 
- out
-
 }
+
+

@@ -1,7 +1,6 @@
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
-#Nate is co-first author of this work
-#nate second commit for practice
+
 
 library(future)
 library(future.callr)
@@ -61,7 +60,7 @@ analyses <- expand_grid(
   "rfvs_negate",
   "rfvs_anova"
  ),
- run = 1:3
+ run = 1:5
 ) %>%
  # filter(dataset %in% c("GeographicalOriginalofMusic-outcome-V100")) %>%
  separate(col = 'dataset',
@@ -72,7 +71,7 @@ analyses <- expand_grid(
 
 branch_resources <-
  tar_resources(
-  future = tar_resources_future(resources = list(n_cores=1))
+  future = tar_resources_future(resources = list(n_cores=20))
  )
 
 cols_to_summarize <- c("n_selected",
@@ -113,20 +112,31 @@ tar_plan(
  # stack benchmark results into one frame
  tar_combine(bm_comb, bm[[1]]),
 
- # edit/add new columns to benchmark (includes standardization)
- bm_comb_clean = bench_clean(bm_comb, cols_to_standardize = cols_to_summarize),
+ #### Create Summary Data Set Z-scores ####
+ results_z = bench_standardize(bm_comb, ignore=NULL),
 
- # Results ----
+ ###### Datasets summary ##########
+ # requires folder 'data/' created above using datasets_make()
+ data_cv = datasets_cv(), #calculates coefficient of variation of each data set
+ data_full = datasets_full(data_cv), #appends datasets_cv to datasets_selected
 
- # summary of benchmark
- results_smry = bench_summarize(bm_comb_clean, cols_to_summarize),
+ #dataset summary figure. Requires "grid.arrange(fig_datasets_smry)
+ fig_datasets_smry = vis_datasets_smry(data_full),
 
- # Tables ----
+ ###### Results Summary ##########
+ # Distribution plots
+ fig_log_time = vis_dist_plots(bm_comb, y="log_time", plot_by="median", order_by="median"),
+ fig_log_time_z = vis_dist_plots(bm_comb, y="log_time_z", plot_by="median", order_by="median"),
 
- # Figures ----
+ fig_perc_reduced = vis_dist_plots(bm_comb, y="perc_reduced", plot_by="median", order_by="median"),
+ fig_perc_reduced_z = vis_dist_plots(bm_comb, y="perc_reduced_z", plot_by="median", order_by="median"),
 
- # summary figure of data characteristics
- fig_datasets_smry = vis_datasets_smry(datasets),
+ fig_rsq_axis = vis_dist_plots(bm_comb, y="rsq_axis", plot_by="median", order_by="median"),
+ fig_rsq_z_axis = vis_dist_plots(bm_comb, y="rsq_axis_z", plot_by="median", order_by="median", ignore="hap"),
+
+ fig_rsq_oblique = vis_dist_plots(bm_comb, y="rsq_oblique", plot_by="median", order_by="median"),
+ fig_rsq_z_oblique = vis_dist_plots(bm_comb, y="rsq_oblique_z", plot_by="median", order_by="median", ignore="hap"),
+
 
  # Mean and Median R-square by Forest Type
  fig_rsq_median = vis_rsq(results_smry$overall,
@@ -140,8 +150,13 @@ tar_plan(
 
  # Outputs ----
 
+ # Accuracy by time by Percent Reduction
+ fig_main_median_axis = vis_main_plot(results_z, x="rsq_axis_50", y="time_50", z="perc_reduced_50"),
+ fig_main_mean_axis = vis_main_plot(results_z, x="rsq_axis_mean", y="time_mean", z="perc_reduced_mean"),
+
+ fig_main_median_oblique = vis_main_plot(results_z, x="rsq_oblique_50", y="time_50", z="perc_reduced_50"),
+ fig_main_mean_oblique = vis_main_plot(results_z, x="rsq_oblique_mean", y="time_mean", z="perc_reduced_mean"),
+
  tar_render(readme, "README.Rmd")
 
 )
-
-
