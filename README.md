@@ -27,7 +27,7 @@ in step 2.
 We assume that better variable selection leads to better prediction
 accuracy. Results from the experiment are below.
 
-<img src="README_files/figure-gfm/unnamed-chunk-3-1.png" width="1578" />
+<img src="README_files/figure-gfm/unnamed-chunk-3-1.png" width="1564" />
 
 Similar results, but using mean and standard error
 

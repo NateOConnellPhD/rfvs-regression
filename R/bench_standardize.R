@@ -8,6 +8,7 @@
 #    ignore: vector of methods to exclude. Relevant for standarized scores
 #
 
+<<<<<<< HEAD
 bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, ignore=NULL){
 
  #stores all method shortnames in vector for later labeling after exclusion
@@ -19,10 +20,16 @@ bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, ignore=
  }
 
  #exclude methods if specified
+=======
+bench_standardize <- function(bm_comb_clean, ignore=NULL){
+
+ # exclude methods if specified
+>>>>>>> main
  if(is.null(ignore)==F){
-  bm_comb <- bm_comb[bm_comb$rfvs %in% ignore==F,]
+  bm_comb_clean <- bm_comb_clean[bm_comb_clean$rfvs %in% ignore==F,]
  }
 
+<<<<<<< HEAD
  #calculate percent variables reduced
  bm_comb <- bm_comb %>% mutate(perc_reduced = 1-n_selected/(n_col-1),
                                log_time = log(as.numeric(time)))
@@ -30,11 +37,20 @@ bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, ignore=
  #define columns to standardize
  z_cols <- c("rsq_axis", "rsq_oblique",
              "time","log_time", "perc_reduced")
+=======
+ # define columns to standardize
+ z_cols <- c("rsq_axis",
+             "rsq_oblique",
+             "time",
+             "log_time",
+             "perc_reduced")
+>>>>>>> main
 
- #standardize columns
- bm_comb <- bm_comb %>%
-  group_by(dataset,run) %>% mutate(across(.cols = all_of(z_cols),
-                                          .fns = list(z = ~scale(.x)[,1]))) %>% ungroup()
+ # standardize columns
+ bm_comb_clean <- bm_comb_clean %>%
+  group_by(dataset,run) %>%
+  mutate(across(.cols = all_of(z_cols), .fns = list(z = ~scale(.x)[,1]))) %>%
+  ungroup()
 
  smry_cols <- c("n_selected",
                 "perc_reduced",
@@ -42,12 +58,15 @@ bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, ignore=
                 "rsq_axis",
                 "rmse_oblique",
                 "rsq_oblique",
+<<<<<<< HEAD
                 "time", "log_time",
                 "rsq_axis_z", "rsq_oblique_z",
                 "time_z","log_time_z", "perc_reduced_z")
+=======
+                "time",
+                "log_time")
+>>>>>>> main
 
- bm_comb <- bm_comb %>%
-  mutate(time = as.numeric(time, units = 'secs'))
 
  # summary for each dataset ----
 
@@ -74,9 +93,9 @@ bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, ignore=
   pivot_wider(names_from = quantile,
               values_from = all_of(smry_cols))
 
-
  smry_by_data <- left_join(mean_se, quants)
 
+<<<<<<< HEAD
  # summary overall -----
 
  mean_se <- bm_comb %>%
@@ -114,6 +133,10 @@ bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, ignore=
 
  list(by_data = smry_by_data,
       overall = smry_overall)
+=======
+ as.data.frame(smry_by_data)
+
+>>>>>>> main
 }
 
 

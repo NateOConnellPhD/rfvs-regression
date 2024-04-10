@@ -1,4 +1,3 @@
-
 vis_rsq_means <- function(df, exclude.hap=F, exclude.none=F){
  rspec <- round_spec() %>%
   round_using_decimal(1)
@@ -62,7 +61,3 @@ vis_rsq_means <- function(df, exclude.hap=F, exclude.none=F){
        color = "Forest type")
 
 }
-
-
-
-
