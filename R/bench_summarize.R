@@ -4,10 +4,21 @@
 #'
 #' @title
 #' @param results
-bench_summarize <- function(bm_comb, cols_to_summarize) {
+bench_summarize <- function(bm_comb) {
 
- smry_cols <- c(cols_to_summarize,
-                paste(cols_to_summarize, 'z', sep = "_"))
+ bm_comb <- bm_comb %>% mutate(perc_reduced = 1-n_selected/(n_col-1),
+                               log_time = log(as.numeric(time)))
+
+ smry_cols <- c("n_selected",
+                "perc_reduced",
+                "rmse_axis",
+                "rsq_axis",
+                "rmse_oblique",
+                "rsq_oblique",
+                "time", "log_time" )
+
+ bm_comb <- bm_comb %>%
+  mutate(time = as.numeric(time, units = 'secs'))
 
  # summary for each dataset ----
 
@@ -20,7 +31,10 @@ bench_summarize <- function(bm_comb, cols_to_summarize) {
  quants <- bm_comb %>%
   reframe(
    across(
-    .cols = all_of(smry_cols),
+    .cols = c(n_selected, perc_reduced,
+              rmse_axis, rsq_axis,
+              rmse_oblique, rsq_oblique,
+              time, log_time),
     .fns = ~ quantile(.x, probs = c(1,2,3) / 4, na.rm = TRUE)
    ),
    quantile = c(25, 50, 75),
@@ -43,7 +57,10 @@ bench_summarize <- function(bm_comb, cols_to_summarize) {
  quants <- bm_comb %>%
   reframe(
    across(
-    .cols = all_of(smry_cols),
+    .cols = c(n_selected, perc_reduced,
+              rmse_axis, rsq_axis,
+              rmse_oblique, rsq_oblique,
+              time, log_time),
     .fns = ~ quantile(.x, probs = c(1,2,3) / 4, na.rm = TRUE)
    ),
    quantile = c(25, 50, 75),
@@ -59,4 +76,3 @@ bench_summarize <- function(bm_comb, cols_to_summarize) {
       overall = smry_overall)
 
 }
-

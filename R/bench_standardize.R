@@ -8,8 +8,8 @@
 #    ignore: vector of methods to exclude. Relevant for standarized scores
 #
 
-<<<<<<< HEAD
-bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, ignore=NULL){
+bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, rfvs.ignore=NULL,
+                              df.ignore=NULL){
 
  #stores all method shortnames in vector for later labeling after exclusion
  all_rfvs <- levels(factor(bm_comb$rfvs))
@@ -20,16 +20,15 @@ bench_standardize <- function(bm_comb, datasets_cv=NULL, cv.thresh=NULL, ignore=
  }
 
  #exclude methods if specified
-=======
-bench_standardize <- function(bm_comb_clean, ignore=NULL){
-
- # exclude methods if specified
->>>>>>> main
- if(is.null(ignore)==F){
-  bm_comb_clean <- bm_comb_clean[bm_comb_clean$rfvs %in% ignore==F,]
+ if(is.null(rfvs.ignore)==F){
+  bm_comb <- bm_comb[bm_comb$rfvs %in% rfvs.ignore==F,]
  }
 
-<<<<<<< HEAD
+ #exclude datasets
+ if(is.null(df.ignore)==F){
+  bm_comb <- bm_comb[bm_comb$dataset %in% df.ignore==F,]
+ }
+
  #calculate percent variables reduced
  bm_comb <- bm_comb %>% mutate(perc_reduced = 1-n_selected/(n_col-1),
                                log_time = log(as.numeric(time)))
@@ -37,20 +36,15 @@ bench_standardize <- function(bm_comb_clean, ignore=NULL){
  #define columns to standardize
  z_cols <- c("rsq_axis", "rsq_oblique",
              "time","log_time", "perc_reduced")
-=======
- # define columns to standardize
- z_cols <- c("rsq_axis",
-             "rsq_oblique",
-             "time",
-             "log_time",
-             "perc_reduced")
->>>>>>> main
 
- # standardize columns
- bm_comb_clean <- bm_comb_clean %>%
-  group_by(dataset,run) %>%
-  mutate(across(.cols = all_of(z_cols), .fns = list(z = ~scale(.x)[,1]))) %>%
-  ungroup()
+ #standardize columns
+ bm_comb <- bm_comb %>%
+  group_by(dataset,run) %>% mutate(across(.cols = all_of(z_cols),
+                                          .fns = list(z = ~scale(.x)[,1]))) %>% ungroup()
+ bm_comb <- bm_comb %>%
+  mutate(time = as.numeric(time, units = 'secs'))
+
+ smry_by_rep <- bm_comb
 
  smry_cols <- c("n_selected",
                 "perc_reduced",
@@ -58,15 +52,9 @@ bench_standardize <- function(bm_comb_clean, ignore=NULL){
                 "rsq_axis",
                 "rmse_oblique",
                 "rsq_oblique",
-<<<<<<< HEAD
                 "time", "log_time",
                 "rsq_axis_z", "rsq_oblique_z",
                 "time_z","log_time_z", "perc_reduced_z")
-=======
-                "time",
-                "log_time")
->>>>>>> main
-
 
  # summary for each dataset ----
 
@@ -93,9 +81,21 @@ bench_standardize <- function(bm_comb_clean, ignore=NULL){
   pivot_wider(names_from = quantile,
               values_from = all_of(smry_cols))
 
+
  smry_by_data <- left_join(mean_se, quants)
 
-<<<<<<< HEAD
+ # smry_by_data %>%
+ #  filter(!str_detect(string = dataset, pattern = 'meat')) %>%
+ #  group_by(rfvs) %>%
+ #  summarize(rsq_oblique = median(rsq_oblique_50)) %>%
+ #  arrange(rsq_oblique)
+ #
+ # smry_by_data %>%
+ #  filter(rfvs == 'anova') %>%
+ #  select(dataset, rsq_oblique_50) %>%
+ #  arrange(rsq_oblique_50) %>%
+ #  View()
+
  # summary overall -----
 
  mean_se <- bm_comb %>%
@@ -124,19 +124,8 @@ bench_standardize <- function(bm_comb_clean, ignore=NULL){
  smry_overall <- left_join(mean_se, quants) %>%
   mutate(dataset = 'overall', .after = rfvs)
 
- #create new variable called method with long form label name for each VS method
- lab_names <- c("Altman", "Menze", "Permute -\nOblique", "Boruta", "CARET", "Hapfelmeier", "Jiang", "Min Depth \nMedium",
-                "Negation", "None", "Permute - \nAxis", "RRF", "Svetnik", "VSURF")
- smry_by_data$method <- factor(smry_by_data$rfvs, levels(factor(smry_by_data$rfvs)), lab_names[all_rfvs %in% levels(factor(smry_by_data$rfvs))])
- smry_overall$method <- factor(smry_overall$rfvs, levels(factor(smry_overall$rfvs)), lab_names[all_rfvs %in% levels(factor(smry_overall$rfvs))])
-
 
  list(by_data = smry_by_data,
-      overall = smry_overall)
-=======
- as.data.frame(smry_by_data)
-
->>>>>>> main
+      overall = smry_overall,
+      by_rep = smry_by_rep)
 }
-
-

@@ -24,6 +24,16 @@ vis_datasets_smry <- function(df){
    axis.line.x.top = element_blank()
   )
 
+ #Plot for N:P
+ p4 <- ggplot(df, aes(x = np_ratio)) +
+  geom_histogram(binwidth = 25,
+                 color = "white",
+                 fill = "black") +
+  ggtitle("N:P Ratio Distribution") +
+  ylab("Frequency") + xlab("N:P Ratio") +
+  theme_bw() +
+  geom_hline(yintercept = 0)
+
  #create plot for number of features
  p2 <- ggplot(df, aes(x = number.of.features)) +
   geom_histogram(binwidth = 25,
@@ -47,8 +57,8 @@ vis_datasets_smry <- function(df){
   scale_x_continuous(breaks = c(0, 2000, 4000, 6000, 8000, 10000))
 
  #Create combined plot
- grid.arrange(p2, p3, print(p1),
-              layout_matrix = matrix(c(1, 2, 3, 3),
+ grid.arrange(p2, p3, print(p1), p4,
+              layout_matrix = matrix(c(1, 2, 3, 4),
                                      ncol = 2,
                                      byrow = T))
 }
