@@ -297,7 +297,7 @@ below
 
 <center>
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+<img src="README_files/figure-gfm/unnamed-chunk-4-1.png" width="1231" />
 
 # Benchmarking Study
 
