@@ -4,13 +4,12 @@
 # input parameters:
 #    df = "bm_comb"
 #    y = name of metric to plot (e.g. time, log_time, time_z, rsq_axis, rsq_axis_z)
-#    plot_by = "mean" or "median" ; plot averaged or medians across runs by method and dataset
-#    order_by = "mean" or "median" ; order methods by mean or median
 #    ignore = vector of rfvs methods to ignore; same as in bench_standardize
 
-vis_dist_plots <- function(df, y=var, plot_by="median", order_by="median", ignore=NULL){
+vis_dist_plots <- function(df, y="rsq_axis", rfvs.ignore=NULL,
+                           df.ignore=NULL){
 
- df <- bench_standardize(df, ignore=ignore)
+ df <- bench_standardize(df, df.ignore = df.ignore, rfvs.ignore=rfvs.ignore)
 
  #Define terms to name Plot title and y-axis based on variable assessed
  out_type <- case_when(
@@ -27,30 +26,30 @@ vis_dist_plots <- function(df, y=var, plot_by="median", order_by="median", ignor
  main_title <- paste0("Method of Variable Selection by ", z_type, out_type, forest_type)
  y_label <- paste0(out_type, z_lab)
 
+ #label
+ df$overall$lab <- factor(df$overall$rfvs, rfvs_key[rfvs_key$rfvs_label %in% df$overall$rfvs,]$rfvs_label,
+                          rfvs_key[rfvs_key$rfvs_label %in% df$overall$rfvs,]$figure_label)
 
- #order values by variable median
- if(order_by=="mean"){
-  order_vars <- eval(parse(text=paste0("df$overall$",y,"_mean")))
- } else if(order_by=="median"){
-  order_vars <- eval(parse(text=paste0("df$overall$",y,"_50")))
- }
+ df$by_data$lab <- factor(df$by_data$rfvs, rfvs_key[rfvs_key$rfvs_label %in% df$by_data$rfvs,]$rfvs_label,
+                          rfvs_key[rfvs_key$rfvs_label %in% df$by_data$rfvs,]$figure_label)
+
+ df$by_rep$lab <- factor(df$by_rep$rfvs, rfvs_key[rfvs_key$rfvs_label %in% df$by_rep$rfvs,]$rfvs_label,
+                          rfvs_key[rfvs_key$rfvs_label %in% df$by_rep$rfvs,]$figure_label)
+
+ order_vars <- eval(parse(text=paste0("df$overall$",y,"_50")))
 
  if(grepl("time", y)){
-  order_vars <- as.vector(df$overall$method[order(order_vars)])
+  order_vars <- as.vector(df$overall$lab[order(order_vars)])
  } else {
-  order_vars <-  as.vector(df$overall$method[order(-order_vars)])
+  order_vars <-  as.vector(df$overall$lab[order(-order_vars)])
  }
 
-  if(plot_by=="mean"){
-   ggplot(df$by_data, aes(x=method, y=eval(parse(text=paste0(y,"_mean")))))+geom_boxplot() +
+   ggplot(df$by_rep, aes(x=lab, y=eval(parse(text=paste0(y)))))+geom_boxplot() +
     ggtitle(main_title) +  scale_x_discrete(limits=order_vars)+
     labs(x="", y=y_label)
-  } else if(plot_by=="median"){
-   ggplot(df$by_data, aes(x=method, y=eval(parse(text=paste0(y,"_50")))))+geom_boxplot() +
-    ggtitle(main_title) +  scale_x_discrete(limits=order_vars)+
-    labs(x="", y=y_label)
-  }
+
 }
+
 
 
 

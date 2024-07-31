@@ -17,22 +17,42 @@ knitr::opts_chunk$set(
 library(table.glue)
 library(tidyverse)
 library(gt)
+library(kableExtra)
+library(gridExtra)
 
 ```
 
 # rfvs-regression
 
+**Note**: The following work titled *A Comparison of Random Forest Variable Selection Methods for Regression Modeling of Continuous Outcomes* by O'Connell, N.S., Jaeger, B.C., Bullock, G.S., and Speiser, J.L. is currently submitted for peer review publication. 
+
+
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of rfvs-regression is to compare random forest variable selection techniques for continuous outcomes
+The goal of rfvs-regression is to compare random forest variable selection techniques for continuous outcomes. We compare several methods available through various R packages and user defined functions from published paper appendices. The code for implementing each RF variable selection approach tested can be found in the function "rfvs()" and each of the methods assessed and compared are given in the following table:
+
+<br/>
+
+```{r}
+tbl_meth <- read_csv("README_files/Table_of_RFVS_methods.csv", 
+         show_col_types = FALSE)
+tbl_meth <- as.data.frame(tbl_meth)
+
+tbl_meth[,1:5] %>% kbl() %>% kableExtra::kable_styling()
+```
+
+<br/>
+
+In this benchmarking study, we pulled datasets from *OpenML* and *modeldata* following the criteria and steps outlined below: 
 
 # Datasets included
 
 ```{r}
 
 tbl <- read_csv("data/datasets_inclusion_chart.csv", 
-         show_col_types = FALSE) %>% 
+         show_col_types = FALSE) %>%  mutate(n=ifelse(n==76, 74, n)) %>% 
+         mutate(n= ifelse(n==61, 59, n)) %>%
  gt(rowname_col = 'exclusion') %>% 
  tab_footnote(locations = cells_stub(rows = 8), 
               footnote = 'Many datasets are different versions of the same data')
@@ -43,167 +63,66 @@ magick::image_read("doc/gt_readme_1.png")
 
 ```
 
-# Central illustration
 
-The experiment we ran involves three steps:
+A total of 59 datasets met criteria and were used in this benchmarking study. Summary characteristics of these datasets are given in the figure below 
 
-1. Select variables with a given method.
-1. Fit a random forest to the data, including only selected variables.
-1. Evaluate prediction accuracy of the forest in held-out data.
-
-*Note*: We use both axis-based and oblique random forests for regression in step 2. 
-
-We assume that better variable selection leads to better prediction accuracy. Results from the experiment are below.
-
+<center>
 ```{r}
-
-targets::tar_load(results_smry)
-
-
-data_tbl <- results_smry$overall %>% 
- ungroup() %>% 
- mutate(
-  rfvs = str_remove(rfvs, 'rfvs_'),
-  across(starts_with('n_selected'), ~ as.integer(round(.x))),
-  across(starts_with('time'),  ~ as.numeric(.x, units = 'secs'))
- ) %>% 
- arrange(rsq_axis_50)
-
-tbl_vars <- c('n_selected',
-              'rsq_oblique', 
-              'rsq_axis',
-              'time')
-
-for(t in tbl_vars){
- 
- t25 <- data_tbl[[paste(t, "25", sep = '_')]]
- t50 <- data_tbl[[paste(t, "50", sep = '_')]]
- t75 <- data_tbl[[paste(t, "75", sep = '_')]]
- 
- data_tbl[[t]] <- table_glue("{t50} ({t25} - {t75})")
- 
-}
-
-tbl <- data_tbl %>% 
- arrange(n_selected_50) %>% 
- select(rfvs, all_of(tbl_vars)) %>% 
- gt(rowname_col = 'rfvs', caption = "Table values present the median (25th percentile, 75th percentile).") %>% 
- tab_stubhead("Variable selection method") %>% 
- cols_label(n_selected = 'N variables selected',
-            rsq_oblique = 'Oblique',
-            rsq_axis = 'Axis-based',
-            time = 'Selection time, seconds') %>% 
- tab_spanner(columns = c("rsq_oblique", "rsq_axis"), 
-             label = "R-squared") %>% 
- cols_align('center') %>% 
- cols_align('left', columns = 'rfvs')
-
-gtsave(tbl, filename = 'doc/gt_readme_2.png')
-
-magick::image_read("doc/gt_readme_2.png")
-
+targets::tar_load(fig_datasets_smry)
+grid.arrange(fig_datasets_smry)
 ```
 
 
-Similar results, but using mean and standard error
+# Benchmarking Study 
+
+We used five replications of split sample validation (i.e., Monte-Carlo cross validation) for each dataset to evaluate RF variable selection methods.
+
+1. First, a dataset was split into training (75%) and testing (25%) sets.
+
+1. Second, each variable selection method was applied to the training data, and the variables selected by each method were saved. 
+
+1. Third, a standard axis-based RF model using the R package *ranger* and an oblique RF using the package *aorsf* were fit on the training data set using variables selected from each method, and R^2 was recorded based on the test data for each replication, method, and dataset. 
+
+1. Fourth, methods of variable selection were compared based on computation time, accuracy measured by R^2, and percent variable reduction
+
+*note*: If any missing values were present in the training or testing data, they were imputed prior to running variable selection methods using the mean and mode for continuous and categorical predictors, respectively, computed in the training data. 
+
+
+## Primary Results Table
+
+We provide the results in the table below for R^2 for downstream models fitted in Axis and Oblique RFs, variable percent reduction (higher % reduction implies more variables eliminated on average), and computation time (in seconds). 
 
 ```{r}
-
-data_tbl <- results_smry$overall %>% 
- ungroup() %>% 
- mutate(
-  rfvs = str_remove(rfvs, 'rfvs_'),
-  across(starts_with('time'),  ~ as.numeric(.x, units = 'secs'))
- ) %>% 
- arrange(rsq_axis_mean)
-
-tbl_vars <- c('n_selected',
-              'rsq_oblique', 
-              'rsq_axis',
-              'time')
-
-for(t in tbl_vars){
- 
- .m <- data_tbl[[paste(t, "mean", sep = '_')]]
- .se <- data_tbl[[paste(t, "se", sep = '_')]]
- 
- data_tbl[[t]] <- table_glue("{.m} ({.se})")
- 
-}
-
-tbl <- data_tbl %>% 
- arrange(n_selected_mean) %>% 
- select(rfvs, all_of(tbl_vars)) %>% 
- gt(rowname_col = 'rfvs', caption = "Table values are mean (standard error).") %>% 
- tab_stubhead("Variable selection method") %>% 
- cols_label(n_selected = 'N variables selected',
-            rsq_oblique = 'Oblique',
-            rsq_axis = 'Axis-based',
-            time = 'Selection time, seconds') %>% 
- tab_spanner(columns = c("rsq_oblique", "rsq_axis"), 
-             label = "R-Squared") %>% 
- cols_align('center') %>% 
- cols_align('left', columns = 'rfvs')
-
-gtsave(tbl, filename = 'doc/gt_readme_3.png')
-
-magick::image_read("doc/gt_readme_3.png")
-
+targets::tar_load(tab_main)
+tab_main
 ```
 
+## Primary Results Figure
+
+We present the results of accuracy, by time, and percent reduction in the figure below. K-Means clustering was used to find the cluster of methods that perform best optimally in terms of computation time and accuracy (in the bottom right corner of the figure), with size and color denoting percent reduction. 
 
 ```{r}
-
-meta <- data.table::fread("data/datasets_included.csv") %>% 
- transmute(dataset = name, 
-           n_obs = number.of.instances,
-           p_uni = n_uni / n_obs, 
-           n_col = number.of.features, 
-           p_col_catg = number.of.symbolic.features / n_col,
-           p_col_ctns = number.of.numeric.features / n_col,
-           p_miss = miss_prop)
-
-targets::tar_load(bm_comb)
-
-data_model <- left_join(bm_comb, meta) %>% 
- select(-outcome, -run, -n_selected, -starts_with("rmse"))
-
-# library(lme4)
-# library(lmerTest)
-# 
-# fit <- lmerTest::lmer(rsq_oblique ~ 0 + rfvs*log(n_obs) + (1|dataset), 
-#                       data = data_model)
-# 
-# summary(fit)
-# 
-# anova(fit)
-
-data_model %>% 
- mutate(time = as.numeric(time, units = 'secs')) %>% 
- filter(rfvs != "none") %>% 
- mutate(rfvs = fct_reorder(rfvs, .x = time, .fun = median)) %>% 
- ggplot() + 
- aes(x = rfvs, y = time) + 
- geom_boxplot() + 
- scale_y_log10() + 
- labs(y = "time to select variables, seconds",
-      title = 'Computational efficiency of variable selection methods')
-
+magick::image_read("README_files/figure-gfm/Figure7.tiff")
 ```
 
+We observe that for downstream Axis forests fitted in *ranger*, the methods of Boruta (r package: *boruta*) and aorsf-Menze (r package: *aorsf*) perform optimmaly in terms of fast computation time and high-accuracy while preserving good parsimony (good variable percent reduction). 
 
+For downstream oblique forests fitted in *aorsf*, the methods aorsf-Menze and aorsf-Permutation (both found within the *aorsf* R package) perform best in terms of computation time and accuracy. 
+
+## Sensitivity to incomplete replication
+
+We note that in several dataset replications, at least one method failed to select a single variable in variable selection. We performed a sensitivity analysis by assessing results only in replications where all methods selected at least one variable (2,464 out of 4,260)
 
 ```{r}
-
-data_model %>%
- pivot_longer(starts_with("rsq")) %>% 
- mutate(rfvs = fct_reorder(rfvs, .x = value, .fun = median)) %>% 
- ggplot() + 
- aes(x = rfvs, y = value, fill = name) + 
- geom_boxplot(outlier.shape = NA) + 
- scale_y_continuous(limits = c(0,1)) +
- labs(y = "R-squared of downstream model",
-      title = 'Prediction accuracy based on variable selection methods')
-
+magick::image_read("README_files/figure-gfm/Figure8.tiff")
 ```
 
+## Comparison of Axis vs Oblique fitted downstream RFs
+
+Last but not least, we compare downstream fitted Axis RFs to Oblique RFs. 
+
+```{r}
+magick::image_read("README_files/figure-gfm/Figure6.tiff")
+```
+
+We find that in terms of median accuracy, downstream oblique fitted forests generally perform slightly better than downstream Axis forests, particularly among the top performing methods of variable selection. 
