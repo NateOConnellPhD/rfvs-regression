@@ -68,8 +68,7 @@ A total of 59 datasets met criteria and were used in this benchmarking study. Su
 
 <center>
 ```{r}
-targets::tar_load(fig_datasets_smry)
-grid.arrange(fig_datasets_smry)
+magick::image_read("README_files/figure-gfm/Figure1.tiff")
 ```
 
 
