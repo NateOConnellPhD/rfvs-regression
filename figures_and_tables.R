@@ -51,7 +51,6 @@ fig5 = arrangeGrob(fig_rsq_oblique, fig_rsq_z_oblique,
 
 ggsave(file='figures/figure5.tiff',plot=fig5, width=10, height=8, dpi=300)
 
-rfvimptest::rfvimptest
 #Figures Mean and Median Rsq
 fig_rsq_median
 fig_rsq_means
