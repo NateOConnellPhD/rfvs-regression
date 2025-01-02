@@ -5,7 +5,11 @@ source("./packages.R")
 lapply(list.files("./R", full.names = TRUE), source)
 
 # needs to be run outside of tar_plan to avoid dynamic branching
+<<<<<<< HEAD
 #datasets_make(write_data = TRUE)
+=======
+# datasets_make(write_data = TRUE)
+>>>>>>> main
 
 # if you don't need to update the tasks, just load them
 datasets_included <- list.files('data', pattern = "-outcome-") %>%
@@ -134,8 +138,14 @@ tar_plan(
  fig_rsq_axis = vis_dist_plots(results, y="rsq_axis"),
  fig_rsq_z_axis = vis_dist_plots(results, y="rsq_axis_z", rfvs.ignore="hap"),
 
+<<<<<<< HEAD
  fig_rsq_oblique = vis_dist_plots(results, y="rsq_oblique"),
  fig_rsq_z_oblique = vis_dist_plots(results, y="rsq_oblique_z", rfvs.ignore="hap"),
+=======
+ fig_rsq_oblique = vis_dist_plots(bm_comb, y="rsq_oblique", plot_by="median", order_by="median"),
+ fig_rsq_z_oblique = vis_dist_plots(bm_comb, y="rsq_oblique_z", plot_by="median", order_by="median", ignore="hap"),
+
+>>>>>>> main
 
  # Mean and Median R-square by Forest Type
  fig_rsq_median = vis_rsq(results, stat="median", rfvs.ignore = "hap"),

@@ -305,8 +305,12 @@ We used five replications of split sample validation (i.e., Monte-Carlo
 cross validation) for each dataset to evaluate RF variable selection
 methods.
 
+<<<<<<< HEAD
 1.  First, a dataset was split into training (75%) and testing (25%)
     sets.
+=======
+<img src="README_files/figure-gfm/unnamed-chunk-3-1.png" width="1564" />
+>>>>>>> main
 
 2.  Second, each variable selection method was applied to the training
     data, and the variables selected by each method were saved.
