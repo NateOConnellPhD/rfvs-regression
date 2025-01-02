@@ -337,9 +337,6 @@ rfvs_svetnik <- function(train,
 
 
 
-
-
-
 ### RRF regularized RF
 rfvs_rrf <- function(train, formula, ...){
 

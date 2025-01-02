@@ -7,10 +7,16 @@ eval_rmse <- function(estimate, truth){
 
 }
 
-eval_rsq <- function(estimate, truth){
 
- baseline <- eval_rmse(mean(truth), truth)
+eval_rsq <- function(estimate, truth) {
 
- 1 - eval_rmse(estimate, truth) / baseline
+ ss_total <- sum((truth - mean(truth))^2) # Total Sum of Squares
+
+ ss_residual <- sum((truth - estimate)^2) # Residual Sum of Squares
+
+ 1 - (ss_residual / ss_total) # R² Formula
 
 }
+
+
+

@@ -47,9 +47,19 @@ renv/
 .Rdata
 .DS_Store
 
+#old functions
+R/vis_rsq_means.R
+R/vis_rsq_median.R
+R/v_select_hap.R
+R/v_select_jiang.R
+R/v_select_svt.R
 
 # datasets
 data
 
 # this random pdf that R makes sometimes...
 Rplots
+
+# Figures
+figures.zip
+figures/
