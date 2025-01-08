@@ -1,8 +1,5 @@
-#' .. content for \description{} (no empty lines) ..
-#'
-#' .. content for \details{} ..
-#'
-#' @title
+#' clean benchmark results
+#' @param bm_comb the combined benchmark result target
 #' @param bm_comb
 bench_clean <- function(bm_comb, cols_to_standardize = c("rsq_axis",
                                                          "rsq_oblique",

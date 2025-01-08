@@ -1,8 +1,11 @@
-#' .. content for \description{} (no empty lines) ..
-#'
-#' .. content for \details{} ..
-#'
-#' @title
+#' Make the data for this benchmark
+#' @param max_miss_prop highest missing value proportion allowed
+#' @param min_features smallest number of predictors allowed
+#' @param max_features largest number of predictors allowed 
+#' @param min_obs smallest number of observations allowed
+#' @param max_obs largest number of observations allowed
+#' @param min_outcome_uni minimum number of unique values in outcome
+#' @param write_data set to TRUE to save data locally
 
 datasets_make <- function(max_miss_prop = 0.50,
                           min_features = 10,

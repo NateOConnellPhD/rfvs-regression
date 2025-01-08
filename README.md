@@ -305,12 +305,8 @@ We used five replications of split sample validation (i.e., Monte-Carlo
 cross validation) for each dataset to evaluate RF variable selection
 methods.
 
-<<<<<<< HEAD
 1.  First, a dataset was split into training (75%) and testing (25%)
     sets.
-=======
-<img src="README_files/figure-gfm/unnamed-chunk-3-1.png" width="1564" />
->>>>>>> main
 
 2.  Second, each variable selection method was applied to the training
     data, and the variables selected by each method were saved.
@@ -367,16 +363,16 @@ Time (seconds)
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.41 ( 0.009 )<br> 0.4 \[ 0.216 , 0.637 \]
+0.41 ( 0.017 )<br> 0.39 \[ 0.183 , 0.626 \]
 </td>
 <td style="text-align:center;">
-0.43 (0.009)<br>0.43 \[0.231, 0.654\]
+0.43 (0.018)<br>0.44 \[0.223, 0.651\]
 </td>
 <td style="text-align:center;">
-0.74 ( 0.006 )<br> 0.81 \[ 0.667 , 0.9 \]
+0.75 ( 0.012 )<br> 0.82 \[ 0.667 , 0.9 \]
 </td>
 <td style="text-align:center;">
-310.78 ( 17.446 )<br> 48.59 \[ 17.551 , 308.984 \]
+338.02 ( 37.636 )<br> 52.63 \[ 19.956 , 379.291 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -389,16 +385,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.42 ( 0.009 )<br> 0.4 \[ 0.225 , 0.69 \]
+0.42 ( 0.018 )<br> 0.42 \[ 0.212 , 0.693 \]
 </td>
 <td style="text-align:center;">
-0.45 (0.009)<br>0.48 \[0.23, 0.724\]
+0.45 (0.018)<br>0.47 \[0.233, 0.724\]
 </td>
 <td style="text-align:center;">
-0.61 ( 0.008 )<br> 0.67 \[ 0.428 , 0.816 \]
+0.61 ( 0.015 )<br> 0.67 \[ 0.439 , 0.812 \]
 </td>
 <td style="text-align:center;">
-11.7 ( 0.908 )<br> 1.92 \[ 0.552 , 7.46 \]
+17.8 ( 2.427 )<br> 3.57 \[ 1.198 , 12.561 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -411,16 +407,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.42 ( 0.009 )<br> 0.42 \[ 0.224 , 0.693 \]
+0.42 ( 0.019 )<br> 0.4 \[ 0.22 , 0.694 \]
 </td>
 <td style="text-align:center;">
-0.45 (0.009)<br>0.48 \[0.236, 0.724\]
+0.45 (0.019)<br>0.48 \[0.236, 0.724\]
 </td>
 <td style="text-align:center;">
-0.55 ( 0.008 )<br> 0.59 \[ 0.325 , 0.786 \]
+0.56 ( 0.016 )<br> 0.6 \[ 0.364 , 0.8 \]
 </td>
 <td style="text-align:center;">
-29.65 ( 2.566 )<br> 3.54 \[ 0.721 , 11.824 \]
+42.67 ( 6.464 )<br> 4.91 \[ 1.145 , 24.119 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -433,16 +429,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.42 ( 0.009 )<br> 0.42 \[ 0.223 , 0.67 \]
+0.41 ( 0.019 )<br> 0.42 \[ 0.208 , 0.677 \]
 </td>
 <td style="text-align:center;">
-0.43 (0.009)<br>0.45 \[0.238, 0.672\]
+0.43 (0.018)<br>0.44 \[0.225, 0.673\]
 </td>
 <td style="text-align:center;">
-0.46 ( 0.009 )<br> 0.44 \[ 0.133 , 0.781 \]
+0.46 ( 0.019 )<br> 0.45 \[ 0.133 , 0.774 \]
 </td>
 <td style="text-align:center;">
-29.53 ( 2.018 )<br> 3.65 \[ 1.586 , 17.349 \]
+40.58 ( 4.363 )<br> 8.35 \[ 3.519 , 47.411 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -455,16 +451,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.43 ( 0.009 )<br> 0.42 \[ 0.238 , 0.695 \]
+0.43 ( 0.019 )<br> 0.42 \[ 0.23 , 0.694 \]
 </td>
 <td style="text-align:center;">
-0.44 (0.009)<br>0.44 \[0.23, 0.692\]
+0.44 (0.019)<br>0.44 \[0.218, 0.681\]
 </td>
 <td style="text-align:center;">
-0.47 ( 0.01 )<br> 0.48 \[ 0.111 , 0.834 \]
+0.48 ( 0.02 )<br> 0.5 \[ 0.111 , 0.826 \]
 </td>
 <td style="text-align:center;">
-3150.54 ( 251.018 )<br> 171.32 \[ 51.698 , 1178.646 \]
+3544.69 ( 580.392 )<br> 171.95 \[ 52.846 , 1170.799 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -477,16 +473,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.16 ( 0.008 )<br> 0.07 \[ -0.007 , 0.282 \]
+0.18 ( 0.017 )<br> 0.08 \[ -0.005 , 0.32 \]
 </td>
 <td style="text-align:center;">
-0.2 (0.008)<br>0.09 \[-0.001, 0.343\]
+0.21 (0.017)<br>0.1 \[0, 0.401\]
 </td>
 <td style="text-align:center;">
-0.92 ( 0.001 )<br> 0.93 \[ 0.9 , 0.952 \]
+0.92 ( 0.002 )<br> 0.93 \[ 0.9 , 0.95 \]
 </td>
 <td style="text-align:center;">
-1266.94 ( 98.942 )<br> 77.48 \[ 17.061 , 542.933 \]
+1068.56 ( 151.485 )<br> 143.83 \[ 35.449 , 563.047 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -499,16 +495,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.43 ( 0.009 )<br> 0.42 \[ 0.233 , 0.693 \]
+0.42 ( 0.019 )<br> 0.42 \[ 0.22 , 0.693 \]
 </td>
 <td style="text-align:center;">
-0.45 (0.009)<br>0.44 \[0.235, 0.719\]
+0.44 (0.019)<br>0.44 \[0.232, 0.72\]
 </td>
 <td style="text-align:center;">
-0.64 ( 0.008 )<br> 0.69 \[ 0.444 , 0.872 \]
+0.65 ( 0.015 )<br> 0.7 \[ 0.474 , 0.872 \]
 </td>
 <td style="text-align:center;">
-403.82 ( 28.423 )<br> 35.16 \[ 9.501 , 202.174 \]
+455.36 ( 63.503 )<br> 41.57 \[ 14.373 , 260.241 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -521,16 +517,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.41 ( 0.009 )<br> 0.39 \[ 0.203 , 0.657 \]
+0.41 ( 0.018 )<br> 0.39 \[ 0.199 , 0.666 \]
 </td>
 <td style="text-align:center;">
-0.41 (0.009)<br>0.42 \[0.171, 0.632\]
+0.41 (0.018)<br>0.42 \[0.143, 0.634\]
 </td>
 <td style="text-align:center;">
-0.36 ( 0.009 )<br> 0.28 \[ 0 , 0.667 \]
+0.35 ( 0.019 )<br> 0.27 \[ 0 , 0.667 \]
 </td>
 <td style="text-align:center;">
-27.99 ( 0.591 )<br> 19.92 \[ 12.613 , 41.722 \]
+30.08 ( 1.16 )<br> 20.87 \[ 13.91 , 47.381 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -543,16 +539,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.42 ( 0.01 )<br> 0.41 \[ 0.214 , 0.671 \]
+0.41 ( 0.019 )<br> 0.4 \[ 0.182 , 0.671 \]
 </td>
 <td style="text-align:center;">
-0.44 (0.009)<br>0.42 \[0.198, 0.725\]
+0.44 (0.019)<br>0.41 \[0.188, 0.726\]
 </td>
 <td style="text-align:center;">
-0.54 ( 0.008 )<br> 0.58 \[ 0.333 , 0.778 \]
+0.53 ( 0.016 )<br> 0.58 \[ 0.325 , 0.776 \]
 </td>
 <td style="text-align:center;">
-38.17 ( 3.54 )<br> 2.01 \[ 0.623 , 11.479 \]
+44.32 ( 7.204 )<br> 5.06 \[ 1.166 , 20.333 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -565,10 +561,10 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.4 ( 0.009 )<br> 0.39 \[ 0.203 , 0.617 \]
+0.4 ( 0.017 )<br> 0.4 \[ 0.182 , 0.621 \]
 </td>
 <td style="text-align:center;">
-0.4 (0.009)<br>0.39 \[0.142, 0.632\]
+0.4 (0.017)<br>0.4 \[0.137, 0.635\]
 </td>
 <td style="text-align:center;">
 0 ( 0 )<br> 0 \[ 0 , 0 \]
@@ -587,16 +583,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.4 ( 0.009 )<br> 0.4 \[ 0.219 , 0.619 \]
+0.4 ( 0.018 )<br> 0.39 \[ 0.196 , 0.624 \]
 </td>
 <td style="text-align:center;">
-0.41 (0.009)<br>0.4 \[0.174, 0.635\]
+0.4 (0.017)<br>0.4 \[0.161, 0.633\]
 </td>
 <td style="text-align:center;">
-0.13 ( 0.005 )<br> 0.05 \[ 0 , 0.222 \]
+0.13 ( 0.01 )<br> 0.05 \[ 0 , 0.243 \]
 </td>
 <td style="text-align:center;">
-0.32 ( 0.021 )<br> 0.05 \[ 0.027 , 0.234 \]
+0.37 ( 0.032 )<br> 0.08 \[ 0.041 , 0.373 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -609,16 +605,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.4 ( 0.009 )<br> 0.4 \[ 0.204 , 0.619 \]
+0.4 ( 0.017 )<br> 0.4 \[ 0.17 , 0.623 \]
 </td>
 <td style="text-align:center;">
-0.4 (0.009)<br>0.39 \[0.146, 0.632\]
+0.4 (0.017)<br>0.39 \[0.137, 0.633\]
 </td>
 <td style="text-align:center;">
-0.01 ( 0.002 )<br> 0 \[ 0 , 0 \]
+0.02 ( 0.004 )<br> 0 \[ 0 , 0 \]
 </td>
 <td style="text-align:center;">
-1.91 ( 0.105 )<br> 0.33 \[ 0.118 , 1.726 \]
+2.43 ( 0.256 )<br> 0.6 \[ 0.152 , 2.735 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -631,16 +627,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.41 ( 0.009 )<br> 0.37 \[ 0.204 , 0.647 \]
+0.41 ( 0.018 )<br> 0.37 \[ 0.181 , 0.642 \]
 </td>
 <td style="text-align:center;">
-0.44 (0.009)<br>0.4 \[0.221, 0.685\]
+0.43 (0.018)<br>0.4 \[0.204, 0.68\]
 </td>
 <td style="text-align:center;">
-0.69 ( 0.008 )<br> 0.78 \[ 0.579 , 0.902 \]
+0.69 ( 0.016 )<br> 0.76 \[ 0.577 , 0.904 \]
 </td>
 <td style="text-align:center;">
-1132.1 ( 65.615 )<br> 178.94 \[ 57.772 , 1142.9 \]
+1197.21 ( 134.788 )<br> 245.47 \[ 76.233 , 1317.819 \]
 </td>
 </tr>
 <tr grouplength="1">
@@ -653,16 +649,16 @@ Mean (SD)<br>Median \[IQR\]
 Mean (SD)<br>Median \[IQR\]
 </td>
 <td style="text-align:center;">
-0.42 ( 0.01 )<br> 0.41 \[ 0.218 , 0.689 \]
+0.43 ( 0.018 )<br> 0.41 \[ 0.205 , 0.69 \]
 </td>
 <td style="text-align:center;">
-0.43 (0.01)<br>0.41 \[0.224, 0.715\]
+0.43 (0.019)<br>0.43 \[0.216, 0.714\]
 </td>
 <td style="text-align:center;">
-0.76 ( 0.007 )<br> 0.84 \[ 0.7 , 0.923 \]
+0.76 ( 0.014 )<br> 0.84 \[ 0.707 , 0.918 \]
 </td>
 <td style="text-align:center;">
-244.92 ( 20.163 )<br> 20.02 \[ 8.875 , 106.442 \]
+256.19 ( 41.346 )<br> 23.71 \[ 8.851 , 125.959 \]
 </td>
 </tr>
 </tbody>

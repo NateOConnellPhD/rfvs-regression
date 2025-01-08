@@ -5,11 +5,7 @@ source("./packages.R")
 lapply(list.files("./R", full.names = TRUE), source)
 
 # needs to be run outside of tar_plan to avoid dynamic branching
-<<<<<<< HEAD
 #datasets_make(write_data = TRUE)
-=======
-# datasets_make(write_data = TRUE)
->>>>>>> main
 
 # if you don't need to update the tasks, just load them
 datasets_included <- list.files('data', pattern = "-outcome-") %>%
@@ -59,7 +55,7 @@ analyses <- expand_grid(
   "rfvs_negate",
   "rfvs_anova"
  ),
- run = 1:20
+ run = 1:5
 ) %>%
  # filter(dataset %in% c("GeographicalOriginalofMusic-outcome-V100")) %>%
  separate(col = 'dataset',
@@ -146,12 +142,8 @@ tar_plan(
  fig_rsq_means = vis_rsq(results, stat="mean", rfvs.ignore="hap"),
 
  # Accuracy by time by Percent Reduction
- fig_main_median= vis_main_plot(results, x="rsq_50", y="time_50", z="perc_reduced_50", k_clust = 3),
+ fig_main_median= vis_main_plot(results, x="rsq_50", y="time_50", z="perc_reduced_50"),
  fig_main_mean= vis_main_plot(results, x="rsq_mean", y="time_mean", z="perc_reduced_mean"),
-
- # Accuracy by percent reduction by time
- fig_main_median2 = vis_main_plot2(results, x="rsq_50", y="perc_reduced_50", z="time_50"),
- fig_main_mean2 = vis_main_plot2(results, x="rsq_mean", y="perc_reduced_mean", z="time_mean"),
 
  ###### Generate tables of results #####
  #Main results plot
@@ -186,11 +178,6 @@ tar_plan(
  # Accuracy by time by Percent Reduction
  fig_main_median_cc = vis_main_plot(results_cc, x="rsq_50", y="time_50", z="perc_reduced_50"),
  fig_main_mean_cc = vis_main_plot(results_cc, x="rsq_mean", y="time_mean", z="perc_reduced_mean"),
-
- # Accuracy by percent reduction by time
- fig_main_median2_cc = vis_main_plot2(results_cc, x="rsq_50", y="perc_reduced_50", z="time_50"),
- fig_main_mean2_cc = vis_main_plot2(results_cc, x="rsq_mean", y="perc_reduced_mean", z="time_mean"),
-
 
  ###### Generate tables of results #####
  #Main results plot

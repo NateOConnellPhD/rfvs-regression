@@ -1,12 +1,14 @@
-#' .. content for \description{} (no empty lines) ..
+#' Run the main benchmark for the study
 #'
-#' .. content for \details{} ..
+#' Split data, select variables, then fit a random forest with those variables
 #'
-#' @title
-#' @param task
-#' @param run
-#' @param rfvs
-#' @param tasks_included
+#' @param dataset which dataset
+#' @param outcome name of the outcome
+#' @param label ?
+#' @param rfvs which variable selection method
+#' @param run which split of the dataset to use
+#' @param train_prop proportion of data to use for training
+
 bench_rfvs <- function(dataset,
                        outcome,
                        label,

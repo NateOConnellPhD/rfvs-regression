@@ -1,9 +1,7 @@
-#' .. content for \description{} (no empty lines) ..
-#'
-#' .. content for \details{} ..
-#'
-#' @title
-#' @param results
+#' summarize results from the variable selection benchmark
+#' 
+#' @param bm_comb the combined benchmark target
+
 bench_summarize <- function(bm_comb) {
 
  bm_comb <- bm_comb %>% mutate(perc_reduced = 1-n_selected/(n_col-1),
